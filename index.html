@@ -11,15 +11,27 @@
 		<span>{{todoList.remaining()}} of {{todoList.todos.length}} remaining</span>
 		[ <a href="" ng-click="todoList.archive()">archive</a> ]
 		<ul class="unstyled">
-			<li ng-repeat="todo in todoList.todos">
-				<label class="checkbox">
+			<input type="text" ng-model="query.text">
+			<li ng-repeat="todo in todoList.todos|filter:query">
+				<label class="checkbox" ng-class-even="'even'">
 					<input type="checkbox" ng-model="todo.done">
 					<span class="done-{{todo.done}}">{{todo.text}}</span>
+					<span class="done-{{todo.done}}">{{todo.price | number}}</span>
+					<span class="done-{{todo.done}}">{{todo.price | currency:"¥"}}</span>
 				</label>
 			</li>
 		</ul>
-		<form ng-submit="todoList.addTodo()">
-			<input type="text" ng-model="todoList.todoText" size="30" placeholder="add new todo hear">
+		<form novalidate name="addTodoForm" ng-submit="todoList.addTodo()">
+			<div>
+				<input type="text" name="text" ng-model="todoList.todoText" required ng-minlength="3" ng-maxlength="8" size="30" placeholder="add new todo hear">
+				<span ng-show="addTodoForm.text.$error.required">Required!</span>
+				<span ng-show="addTodoForm.text.$error.minlength">Too short!</span>
+				<span ng-show="addTodoForm.text.$error.maxlength">Too long!</span>
+			</div>
+			<div>
+				<textarea name="memo" ng-model="todoList.todoMemo" cols="30" rows="10" ng-maxlength="140"></textarea>
+				{{140-todoList.todoMemo.length}}
+			</div>
 			<input type="submit" class="btn-primary" value="add">
 		</form>
 	</div>
